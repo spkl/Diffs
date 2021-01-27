@@ -3,3 +3,4 @@
 *.suo
 VSWorkspaceState.json
 slnx.sqlite
+/src/.vs/Diffs/DesignTimeBuild
