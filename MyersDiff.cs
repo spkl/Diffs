@@ -5,39 +5,46 @@ namespace Diffs
 {
     public class MyersDiff<T>
     {
-        private IReadOnlyList<T> aValues, bValues;
+        private T[] aValues, bValues;
 
         private bool[] aRemoved, bAdded;
 
         private IEqualityComparer<T> comparer;
 
-        public MyersDiff(IReadOnlyList<T> aValues, IReadOnlyList<T> bValues)
+        private VArray<int> Vf, Vr;
+
+        public MyersDiff(T[] aValues, T[] bValues)
         {
             this.aValues = aValues;
             this.bValues = bValues;
-            this.aRemoved = new bool[this.aValues.Count];
-            this.bAdded = new bool[this.bValues.Count];
+            this.aRemoved = new bool[this.aValues.Length];
+            this.bAdded = new bool[this.bValues.Length];
+
+            int VMAX = aValues.Length + bValues.Length + 3;
+
+            Vf = VArray<int>.CreateFromTo(-VMAX, VMAX);
+            Vr = VArray<int>.CreateFromTo(-VMAX, VMAX);
             
-            int[] aIndexes = new int[this.aValues.Count];
+            int[] aIndexes = new int[this.aValues.Length];
             for (int i = 0; i < aIndexes.Length; i++)
             {
                 aIndexes[i] = i;
             }
 
-            int[] bIndexes = new int[this.bValues.Count];
+            int[] bIndexes = new int[this.bValues.Length];
             for (int i = 0; i < bIndexes.Length; i++)
             {
                 bIndexes[i] = i;
             }
 
-#if NET5_0
+#if NETCOREAPP
             this.LCS(aIndexes, bIndexes);
 #else
             this.LCS(new ArrayView<int>(aIndexes), new ArrayView<int>(bIndexes));
 #endif
         }
 
-        public MyersDiff(IReadOnlyList<T> aValues, IReadOnlyList<T> bValues, IEqualityComparer<T> comparer)
+        public MyersDiff(T[] aValues, T[] bValues, IEqualityComparer<T> comparer)
             : this(aValues, bValues)
         {
             this.comparer = comparer;
@@ -128,7 +135,7 @@ namespace Diffs
             }
         }
 
-#if NET5_0
+#if NETCOREAPP
         private void LCS(Span<int> A, Span<int> B)
 #else
         private void LCS(ArrayView<int> A, ArrayView<int> B)
@@ -136,24 +143,30 @@ namespace Diffs
         {
             while (A.Length > 0 && B.Length > 0 && this.AreEqual(A[0], B[0]))
             {
-#if NET5_0
+#if (NET5_0 || NETCOREAPP3_1)
                 A = A[1..];
                 B = B[1..];
+#elif NETCOREAPP
+                A = A.Slice(1);
+                B = B.Slice(1);
 #else
                 A = A.TrimStart(1);
                 B = B.TrimStart(1);
 #endif
             }
 
-#if NET5_0
+#if (NET5_0 || NETCOREAPP3_1)
             while (A.Length > 0 && B.Length > 0 && this.AreEqual(A[^1], B[^1]))
 #else
-            while (A.Length > 0 && B.Length > 0 && this.AreEqual(A[-1], B[-1]))
+            while (A.Length > 0 && B.Length > 0 && this.AreEqual(A[A.Length - 1], B[B.Length - 1]))
 #endif
             {
-#if NET5_0
+#if (NET5_0 || NETCOREAPP3_1)
                 A = A[..^1];
                 B = B[..^1];
+#elif NETCOREAPP
+                A = A.Slice(0, A.Length - 1);
+                B = B.Slice(0, B.Length - 1);
 #else
                 A = A.TrimEnd(1);
                 B = B.TrimEnd(1);
@@ -179,9 +192,12 @@ namespace Diffs
             else
             {
                 (int D, int x, int y, int u, int v) = this.SMS(A, B);
-#if NET5_0
+#if (NET5_0 || NETCOREAPP3_1)
                 LCS(A[..x], B[..y]);
                 LCS(A[u..], B[v..]);
+#elif NETCOREAPP
+                LCS(A.Slice(0, x), B.Slice(0, y));
+                LCS(A.Slice(u), B.Slice(v));
 #else
                 LCS(A.Range(0, x), B.Range(0, y));
                 LCS(A.Range(u), B.Range(v));
@@ -189,7 +205,7 @@ namespace Diffs
             }
         }
 
-#if NET5_0
+#if NETCOREAPP
         private (int D, int x, int y, int u, int v) SMS(Span<int> A, Span<int> B)
 #else
         private (int D, int x, int y, int u, int v) SMS(ArrayView<int> A, ArrayView<int> B)
@@ -203,9 +219,6 @@ namespace Diffs
             int delta = N-M;
             bool deltaIsEven = delta % 2 == 0;
             bool deltaIsOdd = !deltaIsEven;
-
-            VArray<int> Vf = VArray<int>.CreateFromTo(-VMAX, VMAX);
-            VArray<int> Vr = VArray<int>.CreateFromTo(-VMAX, VMAX);
             
             Vf[1] = 0;
             Vr[delta + 1] = N + 1;

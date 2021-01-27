@@ -62,18 +62,8 @@ namespace Diffs
 
         public T this[int index]
         {
-            get => this.array[TranslateIndex(index)];
-            set => this.array[TranslateIndex(index)] = value;
-        }
-
-        private int TranslateIndex(int index)
-        {
-            if (index < 0)
-            {
-                return this.TranslateIndex(this.Length + index);
-            }
-
-            return index + this.StartOffset;
+            get => this.array[index + this.StartOffset];
+            set => this.array[index + this.StartOffset] = value;
         }
 
         public int Count => this.Length;

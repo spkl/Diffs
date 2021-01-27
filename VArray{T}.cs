@@ -47,8 +47,8 @@ namespace Diffs
 
         public T this[int index]
         { 
-            get => ((IList<T>)array)[index - this.offset]; 
-            set => ((IList<T>)array)[index - this.offset] = value; 
+            get => this.array[index - this.offset]; 
+            set => this.array[index - this.offset] = value; 
         }
 
         public int LowerBoundInclusive => this.offset;
