@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Diffs
+namespace spkl.Diffs
 {
     public readonly struct ArrayView<T> : IReadOnlyList<T>
     {

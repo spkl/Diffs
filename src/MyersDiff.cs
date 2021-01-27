@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Diffs
+namespace spkl.Diffs
 {
     public class MyersDiff<T>
     {
@@ -22,8 +22,8 @@ namespace Diffs
 
             int VMAX = aValues.Length + bValues.Length + 3;
 
-            Vf = VArray<int>.CreateFromTo(-VMAX, VMAX);
-            Vr = VArray<int>.CreateFromTo(-VMAX, VMAX);
+            this.Vf = VArray<int>.CreateFromTo(-VMAX, VMAX);
+            this.Vr = VArray<int>.CreateFromTo(-VMAX, VMAX);
             
             int[] aIndexes = new int[this.aValues.Length];
             for (int i = 0; i < aIndexes.Length; i++)
@@ -130,8 +130,6 @@ namespace Diffs
             if (skippedA > 0 || skippedB > 0)
             {
                 yield return (currentA - skippedA, currentB - skippedB, skippedA, skippedB);
-                skippedA = 0;
-                skippedB = 0;
             }
         }
 
@@ -199,8 +197,8 @@ namespace Diffs
                 LCS(A.Slice(0, x), B.Slice(0, y));
                 LCS(A.Slice(u), B.Slice(v));
 #else
-                LCS(A.Range(0, x), B.Range(0, y));
-                LCS(A.Range(u), B.Range(v));
+                this.LCS(A.Range(0, x), B.Range(0, y));
+                this.LCS(A.Range(u), B.Range(v));
 #endif
             }
         }
@@ -219,22 +217,22 @@ namespace Diffs
             int delta = N-M;
             bool deltaIsEven = delta % 2 == 0;
             bool deltaIsOdd = !deltaIsEven;
-            
-            Vf[1] = 0;
-            Vr[delta + 1] = N + 1;
+
+            this.Vf[1] = 0;
+            this.Vr[delta + 1] = N + 1;
 
             for (int D = 0; D <= MAX; D++)
             {
                 for (int k = -D; k <= D; k = k + 2)
                 {
                     int x, y;
-                    if (k == -D || k != D && Vf[k-1] < Vf[k+1])
+                    if (k == -D || k != D && this.Vf[k-1] < this.Vf[k+1])
                     {
-                        x = Vf[k+1];
+                        x = this.Vf[k+1];
                     }
                     else
                     {
-                        x = Vf[k-1] + 1;
+                        x = this.Vf[k-1] + 1;
                     }
 
                     y = x - k;
@@ -244,13 +242,13 @@ namespace Diffs
                         y++;
                     }
 
-                    Vf[k] = x;
+                    this.Vf[k] = x;
                     
-                    if (deltaIsOdd && k >= delta - (D - 1) && k <= delta + D - 1 && Vf[k] >= Vr[k])
+                    if (deltaIsOdd && k >= delta - (D - 1) && k <= delta + D - 1 && this.Vf[k] >= this.Vr[k])
                     {
                         int length = 2 * D - 1;
-                        int u = Vr[k];
-                        int v = Vr[k] - k;
+                        int u = this.Vr[k];
+                        int v = this.Vr[k] - k;
                         return (length, x, y, x, y);
                     }
                 }
@@ -258,13 +256,13 @@ namespace Diffs
                 for (int k = -D + delta; k <= D + delta; k = k + 2)
                 {
                     int x, y;
-                    if (k == -D + delta || k != D + delta && Vr[k-1] >= Vr[k+1])
+                    if (k == -D + delta || k != D + delta && this.Vr[k-1] >= this.Vr[k+1])
                     {
-                        x = Vr[k+1] - 1;
+                        x = this.Vr[k+1] - 1;
                     }
                     else
                     {
-                        x = Vr[k - 1];
+                        x = this.Vr[k - 1];
                     }
 
                     y = x - k;
@@ -275,13 +273,13 @@ namespace Diffs
                         y--;
                     }
 
-                    Vr[k] = x;
+                    this.Vr[k] = x;
 
-                    if (deltaIsEven && k >= -D && k <= D && Vf[k] >= Vr[k])
+                    if (deltaIsEven && k >= -D && k <= D && this.Vf[k] >= this.Vr[k])
                     {
                         int length = 2 * D;
-                        int u = Vf[k];
-                        int v = Vf[k] - k;
+                        int u = this.Vf[k];
+                        int v = this.Vf[k] - k;
                         return (length, x, y, u, v);
                     }
                 }

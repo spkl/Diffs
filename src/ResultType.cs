@@ -1,4 +1,4 @@
-namespace Diffs
+namespace spkl.Diffs
 {
     public enum ResultType : byte
     {

@@ -1,2 +1,5 @@
 /src/bin
 /src/obj
+*.suo
+VSWorkspaceState.json
+slnx.sqlite

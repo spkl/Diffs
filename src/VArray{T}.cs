@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Diffs
+namespace spkl.Diffs
 {
     public class VArray<T> : IEnumerable<T>
     {
