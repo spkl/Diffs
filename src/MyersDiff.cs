@@ -3,6 +3,10 @@ using System.Collections.Generic;
 
 namespace spkl.Diffs
 {
+    /// <summary>
+    /// Provides the diff result or shortest edit script for two sequences A and B using Eugene Myers diff algorithm.
+    /// </summary>
+    /// <typeparam name="T">The sequence item type.</typeparam>
     public class MyersDiff<T>
     {
         private T[] aValues, bValues;
@@ -13,6 +17,13 @@ namespace spkl.Diffs
 
         private VArray<int> Vf, Vr;
 
+        /// <summary>
+        /// Creates a new instance of the <see cref="MyersDiff{T}"/> class
+        /// and calculates the diff result of sequences A and B
+        /// using the <see cref="object.Equals(object)"/> method to determine item equality.
+        /// </summary>
+        /// <param name="aValues">Item sequence A.</param>
+        /// <param name="bValues">Item sequence B.</param>
         public MyersDiff(T[] aValues, T[] bValues)
         {
             this.aValues = aValues;
@@ -44,23 +55,38 @@ namespace spkl.Diffs
 #endif
         }
 
+        /// <summary>
+        /// Creates a new instance of the <see cref="MyersDiff{T}"/> class
+        /// and calculates the diff result of sequences A and B
+        /// using the provided <see cref="IEqualityComparer{T}"/> to determine item equality.
+        /// </summary>
+        /// <param name="aValues">Item sequence A.</param>
+        /// <param name="bValues">Item sequence B.</param>
+        /// <param name="comparer">The implementation to determine item equality.</param>
         public MyersDiff(T[] aValues, T[] bValues, IEqualityComparer<T> comparer)
             : this(aValues, bValues)
         {
             this.comparer = comparer;
         }
 
-        public bool AreEqual(int aIndex, int bIndex)
+        private bool AreEqual(int aIndex, int bIndex)
         {
             if (this.comparer != null)
             {
                 return this.comparer.Equals(this.aValues[aIndex], this.bValues[bIndex]);
             }
-
+            
             return object.Equals(this.aValues[aIndex], this.bValues[bIndex]);
         }
 
-        public IEnumerable<(ResultType, T, T)> GetResult()
+        /// <summary>
+        /// Gets the calculated diff result in the form of matched items/lines:
+        /// ResultType: Specifies whether the line includes only an item from A, from B or from both sequences.
+        /// AItem: The item from sequence A; this is the default value/null if resultType is <see cref="ResultType.B"/>.
+        /// BItem: The item from sequence B, this is the default value/null if resultType is <see cref="ResultType.A"/>.
+        /// </summary>
+        /// <returns>An enumerable of diff lines containing one unmatched or two matched items.</returns>
+        public IEnumerable<(ResultType ResultType, T AItem, T BItem)> GetResult()
         {
             int currentA = 0, currentB = 0;
             while (currentA < this.aRemoved.Length || currentB < this.bAdded.Length)
@@ -97,6 +123,14 @@ namespace spkl.Diffs
             }
         }
 
+        /// <summary>
+        /// Gets the edit script that results from the comparison of the two sequences.
+        /// Every item of the enumerable equals one edit instruction. Read this as follows:
+        /// LineA, CountA: Starting at index LineA in sequence A, remove CountA items.
+        /// LineB, CountB: Starting at index LineB in sequence B, insert CountB items.
+        /// Line numbers start with 0 and correspond to the sequences that were put into the constructor.
+        /// </summary>
+        /// <returns>An enumerable of edit instructions.</returns>
         public IEnumerable<(int LineA, int LineB, int CountA, int CountB)> GetEditScript()
         {
             int currentA = 0, currentB = 0;
