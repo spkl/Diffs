@@ -11,15 +11,19 @@
     <Copyright>Copyright (c) 2021 Sebastian Fischer</Copyright>
     <RepositoryUrl>https://github.com/spkl/Diffs</RepositoryUrl>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion>1.0.0.0</FileVersion>
-    <Version>1.0.0</Version>
+    <FileVersion>1.0.1.0</FileVersion>
+    <Version>1.0.1</Version>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\keys\spkl.Diffs.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
     <PackageProjectUrl>https://github.com/spkl/Diffs</PackageProjectUrl>
-    <Description>Provides a .NET Standard and .NET Core implementation to the diff algorithm (shortest edit script) described by Eugene Myers in "An O(ND) Difference Algorithm and Its Variations". Unlike some other implementations, this one can compare sequences of any object type, using the standard Equals method or a custom IEqualityComparer.</Description>
+    <Description>Provides a .NET Standard and .NET Core implementation to the diff algorithm (shortest edit script) described by Eugene Myers in "An O(ND) Difference Algorithm and Its Variations". Unlike some other implementations, this one can compare sequences of any object type, using the standard Equals method or a custom IEqualityComparer.
+
+This project uses Semantic Versioning (https://semver.org/).</Description>
     <PackageTags>diff diffs difference algorithm ses shortest edit script myers</PackageTags>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageReleaseNotes>- Added documentation comments to all public types and methods to explain usage.
+- Fixed issue where the comparer passed into the MyersDiff&lt;T&gt; constructor was ignored.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
