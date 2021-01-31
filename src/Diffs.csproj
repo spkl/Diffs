@@ -4,6 +4,7 @@
     <TargetFrameworks>netstandard2.0;netcoreapp2.1;netcoreapp3.1;net5.0</TargetFrameworks>
     <RootNamespace>spkl.Diffs</RootNamespace>
     <AssemblyName>spkl.Diffs</AssemblyName>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Authors>Sebastian Fischer</Authors>
     <Company>Sebastian Fischer</Company>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
