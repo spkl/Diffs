@@ -25,9 +25,23 @@ namespace spkl.Diffs
         /// <param name="aValues">Item sequence A.</param>
         /// <param name="bValues">Item sequence B.</param>
         public MyersDiff(T[] aValues, T[] bValues)
+            : this(aValues, bValues, null)
         {
-            this.aValues = aValues;
-            this.bValues = bValues;
+        }
+
+        /// <summary>
+        /// Creates a new instance of the <see cref="MyersDiff{T}"/> class
+        /// and calculates the diff result of sequences A and B
+        /// using the provided <see cref="IEqualityComparer{T}"/> to determine item equality.
+        /// </summary>
+        /// <param name="aValues">Item sequence A.</param>
+        /// <param name="bValues">Item sequence B.</param>
+        /// <param name="comparer">The implementation to determine item equality.</param>
+        public MyersDiff(T[] aValues, T[] bValues, IEqualityComparer<T> comparer)
+        {
+            this.aValues = aValues ?? throw new ArgumentNullException(nameof(aValues));
+            this.bValues = bValues ?? throw new ArgumentNullException(nameof(bValues));
+            this.comparer = comparer;
             this.aRemoved = new bool[this.aValues.Length];
             this.bAdded = new bool[this.bValues.Length];
 
@@ -35,7 +49,7 @@ namespace spkl.Diffs
 
             this.Vf = VArray<int>.CreateFromTo(-VMAX, VMAX);
             this.Vr = VArray<int>.CreateFromTo(-VMAX, VMAX);
-            
+
             int[] aIndexes = new int[this.aValues.Length];
             for (int i = 0; i < aIndexes.Length; i++)
             {
@@ -53,20 +67,6 @@ namespace spkl.Diffs
 #else
             this.LCS(new ArrayView<int>(aIndexes), new ArrayView<int>(bIndexes));
 #endif
-        }
-
-        /// <summary>
-        /// Creates a new instance of the <see cref="MyersDiff{T}"/> class
-        /// and calculates the diff result of sequences A and B
-        /// using the provided <see cref="IEqualityComparer{T}"/> to determine item equality.
-        /// </summary>
-        /// <param name="aValues">Item sequence A.</param>
-        /// <param name="bValues">Item sequence B.</param>
-        /// <param name="comparer">The implementation to determine item equality.</param>
-        public MyersDiff(T[] aValues, T[] bValues, IEqualityComparer<T> comparer)
-            : this(aValues, bValues)
-        {
-            this.comparer = comparer;
         }
 
         private bool AreEqual(int aIndex, int bIndex)

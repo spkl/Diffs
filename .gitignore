@@ -1,6 +1,6 @@
 /src/bin
 /src/obj
+/test/bin
+/test/obj
 *.suo
-VSWorkspaceState.json
-slnx.sqlite
-/src/.vs/Diffs/DesignTimeBuild
+.vs
