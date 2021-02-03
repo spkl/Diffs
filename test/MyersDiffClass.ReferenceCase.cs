@@ -24,7 +24,13 @@
                 }
             }
 
-            public (ResultType ResultType, string AItem, string BItem)[] Result { get; set; }
+            public (ResultType ResultType, string AItem, string BItem)[] ResultAABB { get; set; }
+
+            public (ResultType ResultType, string AItem, string BItem)[] ResultBBAA { get; set; }
+
+            public (ResultType ResultType, string AItem, string BItem)[] ResultABAB { get; set; }
+
+            public (ResultType ResultType, string AItem, string BItem)[] ResultBABA { get; set; }
 
             public (int LineA, int LineB, int CountA, int CountB)[] EditScript { get; set; }
 

@@ -11,29 +11,14 @@ B: c b a b a c
 
 To do this, we use the following code:
 ```csharp
+// using spkl.Diffs;
 string[] a = new[] { "a", "b", "c", "a", "b", "b", "a" };
 string[] b = new[] { "c", "b", "a", "b", "a", "c" };
 MyersDiff<string> diff = new MyersDiff<string>(a, b);
 ```
 Using generic typing, you can diff all sorts of types. You can also customize which values are considered equal by specifying a third constructor parameter (IEqualityComparer&lt;T&gt;).
 
-There are two methods to access the results: `GetResult()` and `GetEditScript()`. 
-
-### GetResult()
-`GetResult()` returns the resulting diff as a sequence of tuples that represent lines. In this case, the return value would look like this:
-| ResultType | AItem | BItem |
-|------------|-------|-------|
-| A          | a     |       |
-| B          |       | c     |
-| Both       | b     | b     |
-| A          | c     |       |
-| Both       | a     | a     |
-| Both       | b     | b     |
-| A          | b     |       |
-| Both       | a     | a     |
-| B          |       | c     |
-
-This is similar to how the result would be displayed in a visual comparison application. The AItem and BItem columns contain sequence A and B, respectively. The ResultType column shows whether a line contains a value from sequence A, B, or from both. You can see which values were matched with each other.
+There are two methods to access the results: `GetEditScript()` and `GetResult()`. 
 
 ### GetEditScript()
 `GetEditScript()` returns a sequence of edit instructions. You can understand these as instructions to follow to transform sequence A to sequence B. Every instruction contains four integers, a starting line number in A and B and the number of lines to add or remove. In this case, the return value would look like this:
@@ -65,3 +50,36 @@ To better understand this, let's follow these instructions:
    *(This adds the last "c")*
 
 Following these instructions, `abcabba` is transformed to `cbabac`.
+
+
+### GetResult()
+`GetResult()` returns the resulting diff as a sequence of tuples that represent lines. In this case, the return value would look like this:
+| ResultType | AItem | BItem |
+|------------|-------|-------|
+| A          | a     |       |
+| B          |       | c     |
+| Both       | b     | b     |
+| A          | c     |       |
+| Both       | a     | a     |
+| Both       | b     | b     |
+| A          | b     |       |
+| Both       | a     | a     |
+| B          |       | c     |
+
+This is similar to how the result would be displayed in a visual comparison application. The AItem and BItem columns contain sequence A and B, respectively. The ResultType column shows whether a line contains a value from sequence A, B, or from both. You can see which values were matched with each other.
+
+### GetResult(ResultOrder)
+You can specify the order in which you want unmatched lines to appear by using the `GetResult(ResultOrder)` overload. To visualize this, we need to use a new example.
+```
+A: a b c
+B: x y
+```
+
+The following table shows how the result would be returned when specifying the different ResultOrder values AABB, BBAA, ABAB and BABA:
+| AABB | BBAA | ABAB | BABA |
+|:----:|:----:|:----:|:----:|
+| a -  | - x  | a -  | - x  |
+| b -  | - y  | - x  | a -  |
+| c -  | a -  | b -  | - y  |
+| - x  | b -  | - y  | b -  |
+| - y  | c -  | c -  | c -  |
