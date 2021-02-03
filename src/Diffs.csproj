@@ -11,8 +11,8 @@
     <Copyright>Copyright (c) 2021 Sebastian Fischer</Copyright>
     <RepositoryUrl>https://github.com/spkl/Diffs</RepositoryUrl>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion>1.0.1.0</FileVersion>
-    <Version>1.0.1</Version>
+    <FileVersion>1.1.0.0</FileVersion>
+    <Version>1.1.0</Version>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\keys\spkl.Diffs.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
@@ -22,8 +22,7 @@
 This project uses Semantic Versioning (https://semver.org/).</Description>
     <PackageTags>diff diffs difference algorithm ses shortest edit script myers</PackageTags>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <PackageReleaseNotes>- Added documentation comments to all public types and methods to explain usage.
-- Fixed issue where the comparer passed into the MyersDiff&lt;T&gt; constructor was ignored.</PackageReleaseNotes>
+    <PackageReleaseNotes>- Introduced new GetResult overload to customize the preferred order of unmatched lines.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
