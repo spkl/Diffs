@@ -86,8 +86,43 @@ namespace spkl.Diffs
         /// BItem: The item from sequence B, this is the default value/null if resultType is <see cref="ResultType.A"/>.
         /// </summary>
         /// <returns>An enumerable of diff lines containing one unmatched or two matched items.</returns>
+        /// <remarks>This is this equal to calling <see cref="GetResult(ResultOrder)"/> with <see cref="ResultOrder.AABB"/>.</remarks>
         public IEnumerable<(ResultType ResultType, T AItem, T BItem)> GetResult()
         {
+            return this.GetResult(ResultOrder.AABB);
+        }
+
+        /// <summary>
+        /// Gets the calculated diff result in the form of matched items/lines:
+        /// ResultType: Specifies whether the line includes only an item from A, from B or from both sequences.
+        /// AItem: The item from sequence A; this is the default value/null if resultType is <see cref="ResultType.B"/>.
+        /// BItem: The item from sequence B, this is the default value/null if resultType is <see cref="ResultType.A"/>.
+        /// </summary>
+        /// <param name="order">The order in which unmatched items/lines are returned.</param>
+        /// <returns>An enumerable of diff lines containing one unmatched or two matched items.</returns>
+        public IEnumerable<(ResultType ResultType, T AItem, T BItem)> GetResult(ResultOrder order)
+        {
+            ResultType GetPreferredNext(ResultType current)
+            {
+                if (current == ResultType.Both)
+                {
+                    // A first or B first
+                    return (order == ResultOrder.ABAB || order == ResultOrder.AABB) ? ResultType.A : ResultType.B;
+                }
+
+                if (order == ResultOrder.AABB || order == ResultOrder.BBAA)
+                {
+                    // Section mode - keep same side.
+                    return current;
+                }
+                else
+                {
+                    // Line mode - switch side.
+                    return current == ResultType.A ? ResultType.B : ResultType.A;
+                }
+            }
+
+            ResultType preferredNext = GetPreferredNext(ResultType.Both);
             int currentA = 0, currentB = 0;
             while (currentA < this.aRemoved.Length || currentB < this.bAdded.Length)
             {
@@ -98,16 +133,37 @@ namespace spkl.Diffs
                         yield return (ResultType.Both, this.aValues[currentA], this.bValues[currentB]);
                         currentA++;
                         currentB++;
+                        preferredNext = GetPreferredNext(ResultType.Both);
                     }
-                    else if (this.aRemoved[currentA])
+                    else if (preferredNext == ResultType.A)
                     {
-                        yield return (ResultType.A, this.aValues[currentA], default(T));
-                        currentA++;
+                        if (this.aRemoved[currentA])
+                        {
+                            yield return (ResultType.A, this.aValues[currentA], default(T));
+                            currentA++;
+                            preferredNext = GetPreferredNext(ResultType.A);
+                        }
+                        else if (this.bAdded[currentB])
+                        {
+                            yield return (ResultType.B, default(T), this.bValues[currentB]);
+                            currentB++;
+                            preferredNext = GetPreferredNext(ResultType.B);
+                        }
                     }
-                    else if (this.bAdded[currentB])
+                    else // preferredNext == ResultType.B
                     {
-                        yield return (ResultType.B, default(T), this.bValues[currentB]);
-                        currentB++;
+                        if (this.bAdded[currentB])
+                        {
+                            yield return (ResultType.B, default(T), this.bValues[currentB]);
+                            currentB++;
+                            preferredNext = GetPreferredNext(ResultType.B);
+                        }
+                        else if (this.aRemoved[currentA])
+                        {
+                            yield return (ResultType.A, this.aValues[currentA], default(T));
+                            currentA++;
+                            preferredNext = GetPreferredNext(ResultType.A);
+                        }
                     }
                 }
                 else if (currentA < this.aRemoved.Length)

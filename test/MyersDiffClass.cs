@@ -54,7 +54,11 @@ namespace spkl.Diffs.Test
         [TestCaseSource(nameof(ReferenceCases))]
         public void ReferenceResult(ReferenceCase testCase)
         {
-            Assert.That(new MyersDiff<string>(testCase.A, testCase.B).GetResult().ToArray(), Is.EqualTo(testCase.Result));
+            Assert.That(new MyersDiff<string>(testCase.A, testCase.B).GetResult().ToArray(), Is.EqualTo(testCase.ResultAABB), "Default order");
+            Assert.That(new MyersDiff<string>(testCase.A, testCase.B).GetResult(ResultOrder.AABB).ToArray(), Is.EqualTo(testCase.ResultAABB), "AABB");
+            Assert.That(new MyersDiff<string>(testCase.A, testCase.B).GetResult(ResultOrder.BBAA).ToArray(), Is.EqualTo(testCase.ResultBBAA), "BBAA");
+            Assert.That(new MyersDiff<string>(testCase.A, testCase.B).GetResult(ResultOrder.ABAB).ToArray(), Is.EqualTo(testCase.ResultABAB), "ABAB");
+            Assert.That(new MyersDiff<string>(testCase.A, testCase.B).GetResult(ResultOrder.BABA).ToArray(), Is.EqualTo(testCase.ResultBABA), "BABA");
         }
 
         [Test]
