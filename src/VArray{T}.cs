@@ -1,3 +1,6 @@
+// Copyright (c) Sebastian Fischer. All Rights Reserved.
+// Licensed under the MIT License.
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
