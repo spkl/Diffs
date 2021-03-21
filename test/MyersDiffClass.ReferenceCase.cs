@@ -1,4 +1,7 @@
-﻿namespace spkl.Diffs.Test
+﻿// Copyright (c) Sebastian Fischer. All Rights Reserved.
+// Licensed under the MIT License.
+
+namespace spkl.Diffs.Test
 {
     public partial class MyersDiffClass
     {

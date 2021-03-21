@@ -1,3 +1,6 @@
+// Copyright (c) Sebastian Fischer. All Rights Reserved.
+// Licensed under the MIT License.
+
 using System;
 using System.Collections.Generic;
 
@@ -50,23 +53,7 @@ namespace spkl.Diffs
             this.Vf = VArray<int>.CreateFromTo(-VMAX, VMAX);
             this.Vr = VArray<int>.CreateFromTo(-VMAX, VMAX);
 
-            int[] aIndexes = new int[this.aValues.Length];
-            for (int i = 0; i < aIndexes.Length; i++)
-            {
-                aIndexes[i] = i;
-            }
-
-            int[] bIndexes = new int[this.bValues.Length];
-            for (int i = 0; i < bIndexes.Length; i++)
-            {
-                bIndexes[i] = i;
-            }
-
-#if NETCOREAPP
-            this.LCS(aIndexes, bIndexes);
-#else
-            this.LCS(new ArrayView<int>(aIndexes), new ArrayView<int>(bIndexes));
-#endif
+            this.LCS(new IndexRange(0, aValues.Length), new IndexRange(0, bValues.Length));
         }
 
         private bool AreEqual(int aIndex, int bIndex)
@@ -75,7 +62,7 @@ namespace spkl.Diffs
             {
                 return this.comparer.Equals(this.aValues[aIndex], this.bValues[bIndex]);
             }
-            
+
             return object.Equals(this.aValues[aIndex], this.bValues[bIndex]);
         }
 
@@ -223,42 +210,18 @@ namespace spkl.Diffs
             }
         }
 
-#if NETCOREAPP
-        private void LCS(Span<int> A, Span<int> B)
-#else
-        private void LCS(ArrayView<int> A, ArrayView<int> B)
-#endif
+        private void LCS(IndexRange A, IndexRange B)
         {
             while (A.Length > 0 && B.Length > 0 && this.AreEqual(A[0], B[0]))
             {
-#if (NET5_0 || NETCOREAPP3_1)
-                A = A[1..];
-                B = B[1..];
-#elif NETCOREAPP
-                A = A.Slice(1);
-                B = B.Slice(1);
-#else
                 A = A.TrimStart(1);
                 B = B.TrimStart(1);
-#endif
             }
 
-#if (NET5_0 || NETCOREAPP3_1)
-            while (A.Length > 0 && B.Length > 0 && this.AreEqual(A[^1], B[^1]))
-#else
             while (A.Length > 0 && B.Length > 0 && this.AreEqual(A[A.Length - 1], B[B.Length - 1]))
-#endif
             {
-#if (NET5_0 || NETCOREAPP3_1)
-                A = A[..^1];
-                B = B[..^1];
-#elif NETCOREAPP
-                A = A.Slice(0, A.Length - 1);
-                B = B.Slice(0, B.Length - 1);
-#else
                 A = A.TrimEnd(1);
                 B = B.TrimEnd(1);
-#endif
             }
 
             if (A.Length == 0)
@@ -279,29 +242,17 @@ namespace spkl.Diffs
             }
             else
             {
-                (int D, int x, int y, int u, int v) = this.SMS(A, B);
-#if (NET5_0 || NETCOREAPP3_1)
-                LCS(A[..x], B[..y]);
-                LCS(A[u..], B[v..]);
-#elif NETCOREAPP
-                LCS(A.Slice(0, x), B.Slice(0, y));
-                LCS(A.Slice(u), B.Slice(v));
-#else
+                (_, int x, int y, int u, int v) = this.SMS(A, B);
                 this.LCS(A.Range(0, x), B.Range(0, y));
                 this.LCS(A.Range(u), B.Range(v));
-#endif
             }
         }
 
-#if NETCOREAPP
-        private (int D, int x, int y, int u, int v) SMS(Span<int> A, Span<int> B)
-#else
-        private (int D, int x, int y, int u, int v) SMS(ArrayView<int> A, ArrayView<int> B)
-#endif
+        private (int D, int x, int y, int u, int v) SMS(IndexRange A, IndexRange B)
         {
             int N = A.Length;
             int M = B.Length;
-            
+
             int VMAX = M + N + 3;
             int MAX = (int)Math.Ceiling((VMAX)/2.0);
             int delta = N-M;
@@ -333,7 +284,7 @@ namespace spkl.Diffs
                     }
 
                     this.Vf[k] = x;
-                    
+
                     if (deltaIsOdd && k >= delta - (D - 1) && k <= delta + D - 1 && this.Vf[k] >= this.Vr[k])
                     {
                         int length = 2 * D - 1;

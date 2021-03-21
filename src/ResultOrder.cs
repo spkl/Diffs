@@ -1,4 +1,7 @@
-﻿namespace spkl.Diffs
+﻿// Copyright (c) Sebastian Fischer. All Rights Reserved.
+// Licensed under the MIT License.
+
+namespace spkl.Diffs
 {
     /// <summary>
     /// Determines in which order the <see cref="MyersDiff{T}.GetResult(ResultOrder)"/> method returns items.
