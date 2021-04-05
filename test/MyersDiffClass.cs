@@ -3,6 +3,8 @@
 
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace spkl.Diffs.Test
@@ -69,6 +71,81 @@ namespace spkl.Diffs.Test
         public void ReferenceEditScript(ReferenceCase testCase)
         {
             Assert.That(new MyersDiff<string>(testCase.A, testCase.B).GetEditScript().ToArray(), Is.EqualTo(testCase.EditScript));
+        }
+
+        [Test]
+        [TestCase("D54ACE32535F00233F43B243D0EF1EDE.mus", "Smooth_Operator.mus")]
+        [TestCase("Smooth_Operator.mus", "D54ACE32535F00233F43B243D0EF1EDE.mus")]
+        public void ApplyDiffResult(string fileA, string fileB)
+        {
+            byte[] a = File.ReadAllBytes(Path.Combine(TestContext.CurrentContext.TestDirectory, "Data", fileA));
+            byte[] b = File.ReadAllBytes(Path.Combine(TestContext.CurrentContext.TestDirectory, "Data", fileB));
+
+            MyersDiff<byte> d = new MyersDiff<byte>(a, b);
+            List<byte> result1 = ApplyEditScript(a, b, d);
+            List<byte> result2 = ApplyResults(d);
+
+            Assert.That(result1, Is.EqualTo(b), "Result constructed from edit script must match original file");
+            Assert.That(result2, Is.EqualTo(b), "Result constructed from result item list must match original file");
+        }
+
+        private static List<byte> ApplyEditScript(byte[] a, byte[] b, MyersDiff<byte> d)
+        {
+            List<byte> result = new List<byte>();
+            Queue<(int LineA, int LineB, int CountA, int CountB)> editScript = new Queue<(int, int, int, int)>(d.GetEditScript());
+            int currentLine = 0;
+            while (currentLine < a.Length)
+            {
+                if (editScript.Count > 0 && editScript.Peek().LineA == currentLine)
+                {
+                    (int lineA, int lineB, int countA, int countB) = editScript.Dequeue();
+                    for (int i = 0; i < countB; i++)
+                    {
+                        result.Add(b[lineB + i]);
+                    }
+
+                    if (countA == 0)
+                    {
+                        result.Add(a[currentLine]);
+                        currentLine++;
+                    }
+                    else
+                    {
+                        currentLine = lineA + countA;
+                    }
+                }
+                else
+                {
+                    result.Add(a[currentLine]);
+                    currentLine++;
+                }
+            }
+
+            return result;
+        }
+
+        private static List<byte> ApplyResults(MyersDiff<byte> d)
+        {
+            List<byte> result = new List<byte>();
+            foreach ((ResultType resultType, byte aItem, byte bItem) in d.GetResult())
+            {
+                switch (resultType)
+                {
+                    case ResultType.A:
+                        break;
+                    case ResultType.B:
+                        result.Add(bItem);
+                        break;
+                    case ResultType.Both:
+                        Assert.That(aItem, Is.EqualTo(bItem), "When ResultType is Both, the AItem and BItem must be equal");
+                        result.Add(aItem);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return result;
         }
     }
 }

@@ -11,8 +11,8 @@
     <Copyright>Copyright (c) 2021 Sebastian Fischer</Copyright>
     <RepositoryUrl>https://github.com/spkl/Diffs</RepositoryUrl>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion>1.2.0.0</FileVersion>
-    <Version>1.2.0</Version>
+    <FileVersion>1.2.1.0</FileVersion>
+    <Version>1.2.1</Version>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\keys\spkl.Diffs.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
@@ -22,8 +22,9 @@
 This project uses Semantic Versioning (https://semver.org/).</Description>
     <PackageTags>diff diffs difference algorithm ses shortest edit script myers</PackageTags>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <PackageReleaseNotes>- Improved performance for .NET standard / Full Framework.
-- Introduced IndexRange class.</PackageReleaseNotes>
+    <PackageReleaseNotes>This is a bugfix release fixing two critical issues:
+- The VArray containing the endpoints of the furthest reaching paths was created too small, leading to an IndexOutOfRangeException in some cases.
+- The result could contain items that indicate they exists on "ResultType.Both" sides, yet they contained two different values as AItem and BItem.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
