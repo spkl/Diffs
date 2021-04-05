@@ -48,7 +48,7 @@ namespace spkl.Diffs
             this.aRemoved = new bool[this.aValues.Length];
             this.bAdded = new bool[this.bValues.Length];
 
-            int VMAX = aValues.Length + bValues.Length + 3;
+            int VMAX = (aValues.Length + bValues.Length) * 2;
 
             this.Vf = VArray<int>.CreateFromTo(-VMAX, VMAX);
             this.Vr = VArray<int>.CreateFromTo(-VMAX, VMAX);
@@ -242,13 +242,13 @@ namespace spkl.Diffs
             }
             else
             {
-                (_, int x, int y, int u, int v) = this.SMS(A, B);
+                (int x, int y) = this.SMS(A, B);
                 this.LCS(A.Range(0, x), B.Range(0, y));
-                this.LCS(A.Range(u), B.Range(v));
+                this.LCS(A.Range(x), B.Range(y));
             }
         }
 
-        private (int D, int x, int y, int u, int v) SMS(IndexRange A, IndexRange B)
+        private (int x, int y) SMS(IndexRange A, IndexRange B)
         {
             int N = A.Length;
             int M = B.Length;
@@ -287,10 +287,7 @@ namespace spkl.Diffs
 
                     if (deltaIsOdd && k >= delta - (D - 1) && k <= delta + D - 1 && this.Vf[k] >= this.Vr[k])
                     {
-                        int length = 2 * D - 1;
-                        int u = this.Vr[k];
-                        int v = this.Vr[k] - k;
-                        return (length, x, y, x, y);
+                        return (x, y);
                     }
                 }
 
@@ -318,10 +315,7 @@ namespace spkl.Diffs
 
                     if (deltaIsEven && k >= -D && k <= D && this.Vf[k] >= this.Vr[k])
                     {
-                        int length = 2 * D;
-                        int u = this.Vf[k];
-                        int v = this.Vf[k] - k;
-                        return (length, x, y, u, v);
+                        return (x, y);
                     }
                 }
             }

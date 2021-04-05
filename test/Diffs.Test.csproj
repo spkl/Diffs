@@ -17,4 +17,13 @@
     <ProjectReference Include="..\src\Diffs.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Data\D54ACE32535F00233F43B243D0EF1EDE.mus">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Smooth_Operator.mus">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
