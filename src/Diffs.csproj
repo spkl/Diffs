@@ -12,8 +12,8 @@
     <Copyright>Copyright (c) 2024 Sebastian Fischer</Copyright>
     <RepositoryUrl>https://github.com/spkl/Diffs</RepositoryUrl>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <FileVersion>2.0.0.0</FileVersion>
-    <Version>2.0.0</Version>
+    <FileVersion>2.0.1.0</FileVersion>
+    <Version>2.0.1</Version>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\keys\spkl.Diffs.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
@@ -24,7 +24,8 @@ This project uses Semantic Versioning (https://semver.org/).</Description>
     <PackageTags>diff diffs difference algorithm ses shortest edit script myers</PackageTags>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageReleaseNotes>- Upgraded target framework to .NET 8.0. Older frameworks are still supported with versions 1.x. 
-- Removed the ArrayView class.</PackageReleaseNotes>
+- Removed the ArrayView class.
+- Fixed table formatting in README (2.0.1).</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
