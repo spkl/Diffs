@@ -218,7 +218,11 @@ namespace spkl.Diffs
                 B = B.TrimStart(1);
             }
 
+#if NETSTANDARD2_0
+            while (A.Length > 0 && B.Length > 0 && this.AreEqual(A[A.Length - 1], B[B.Length - 1]))
+#else
             while (A.Length > 0 && B.Length > 0 && this.AreEqual(A[^1], B[^1]))
+#endif
             {
                 A = A.TrimEnd(1);
                 B = B.TrimEnd(1);
