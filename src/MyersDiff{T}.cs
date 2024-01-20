@@ -12,13 +12,13 @@ namespace spkl.Diffs
     /// <typeparam name="T">The sequence item type.</typeparam>
     public class MyersDiff<T>
     {
-        private T[] aValues, bValues;
+        private readonly T[] aValues, bValues;
 
-        private bool[] aRemoved, bAdded;
+        private readonly bool[] aRemoved, bAdded;
 
-        private IEqualityComparer<T> comparer;
+        private readonly IEqualityComparer<T> comparer;
 
-        private VArray<int> Vf, Vr;
+        private readonly VArray<int> Vf, Vr;
 
         /// <summary>
         /// Creates a new instance of the <see cref="MyersDiff{T}"/> class
@@ -218,7 +218,7 @@ namespace spkl.Diffs
                 B = B.TrimStart(1);
             }
 
-            while (A.Length > 0 && B.Length > 0 && this.AreEqual(A[A.Length - 1], B[B.Length - 1]))
+            while (A.Length > 0 && B.Length > 0 && this.AreEqual(A[^1], B[^1]))
             {
                 A = A.TrimEnd(1);
                 B = B.TrimEnd(1);
@@ -264,7 +264,7 @@ namespace spkl.Diffs
 
             for (int D = 0; D <= MAX; D++)
             {
-                for (int k = -D; k <= D; k = k + 2)
+                for (int k = -D; k <= D; k += 2)
                 {
                     int x, y;
                     if (k == -D || k != D && this.Vf[k-1] < this.Vf[k+1])
@@ -291,7 +291,7 @@ namespace spkl.Diffs
                     }
                 }
 
-                for (int k = -D + delta; k <= D + delta; k = k + 2)
+                for (int k = -D + delta; k <= D + delta; k += 2)
                 {
                     int x, y;
                     if (k == -D + delta || k != D + delta && this.Vr[k-1] >= this.Vr[k+1])
