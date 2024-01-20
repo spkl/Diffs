@@ -28,7 +28,14 @@ namespace spkl.Diffs
         /// </summary>
         public static VArray<T> CreateFromTo(int firstIndex, int lastIndex)
         {
+#if NETSTANDARD2_0
+            if (lastIndex < firstIndex)
+            {
+                throw new ArgumentOutOfRangeException(nameof(lastIndex));
+            }
+#else
             ArgumentOutOfRangeException.ThrowIfLessThan(lastIndex, firstIndex);
+#endif
 
             return new VArray<T>(firstIndex, lastIndex - firstIndex + 1);
         }

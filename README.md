@@ -1,9 +1,6 @@
 # Diffs
 Provides a .NET implementation to the diff algorithm (shortest edit script) described by Eugene Myers in "An O(ND) Difference Algorithm and Its Variations". Unlike some other implementations, this one can compare sequences of any object type, using the standard Equals method or a custom IEqualityComparer.
 
-> __!__ Looking for support of .NET Framework 4.x or .NET Standard 2.0? 
-> Use release 1.x.
-
 ## Example Usage
 In this example, we will diff two string sequences:
 ```
