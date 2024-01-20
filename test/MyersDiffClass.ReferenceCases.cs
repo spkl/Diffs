@@ -5,8 +5,8 @@ namespace spkl.Diffs.Test
 {
     public partial class MyersDiffClass
     {
-        private static readonly ReferenceCase[] ReferenceCases = new[]
-        {
+        private static readonly ReferenceCase[] ReferenceCases =
+        [
             new ReferenceCase
             {
                 AString = "a,b,c,a,b,b,a",
@@ -349,9 +349,7 @@ namespace spkl.Diffs.Test
                     (ResultType.Both, "k", "k"),
                     (ResultType.Both, "l", "l"),
                 },
-                EditScript = new (int, int, int, int)[]
-                {
-                }
+                EditScript = System.Array.Empty<(int, int, int, int)>()
             },
             new ReferenceCase
             {
@@ -801,6 +799,6 @@ namespace spkl.Diffs.Test
                     (4, 4, 1, 1),
                 }
             },
-        };
+        ];
     }
 }

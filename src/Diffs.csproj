@@ -1,30 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netcoreapp2.1;netcoreapp3.1;net5.0</TargetFrameworks>
+    <TargetFrameworks>net8.0</TargetFrameworks>
     <RootNamespace>spkl.Diffs</RootNamespace>
     <AssemblyName>spkl.Diffs</AssemblyName>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Authors>Sebastian Fischer</Authors>
     <Company>Sebastian Fischer</Company>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <Copyright>Copyright (c) 2021 Sebastian Fischer</Copyright>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
+    <Copyright>Copyright (c) 2024 Sebastian Fischer</Copyright>
     <RepositoryUrl>https://github.com/spkl/Diffs</RepositoryUrl>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion>1.2.1.0</FileVersion>
-    <Version>1.2.1</Version>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.0</FileVersion>
+    <Version>2.0.0</Version>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\keys\spkl.Diffs.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
     <PackageProjectUrl>https://github.com/spkl/Diffs</PackageProjectUrl>
-    <Description>Provides a .NET Standard and .NET Core implementation to the diff algorithm (shortest edit script) described by Eugene Myers in "An O(ND) Difference Algorithm and Its Variations". Unlike some other implementations, this one can compare sequences of any object type, using the standard Equals method or a custom IEqualityComparer.
+    <Description>Provides a .NET implementation to the diff algorithm (shortest edit script) described by Eugene Myers in "An O(ND) Difference Algorithm and Its Variations". Unlike some other implementations, this one can compare sequences of any object type, using the standard Equals method or a custom IEqualityComparer.
 
 This project uses Semantic Versioning (https://semver.org/).</Description>
     <PackageTags>diff diffs difference algorithm ses shortest edit script myers</PackageTags>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <PackageReleaseNotes>This is a bugfix release fixing two critical issues:
-- The VArray containing the endpoints of the furthest reaching paths was created too small, leading to an IndexOutOfRangeException in some cases.
-- The result could contain items that indicate they exists on "ResultType.Both" sides, yet they contained two different values as AItem and BItem.</PackageReleaseNotes>
+    <PackageReleaseNotes>- Upgraded target framework to .NET 8.0. Older frameworks are still supported with versions 1.x. 
+- Removed the ArrayView class.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,6 +32,7 @@ This project uses Semantic Versioning (https://semver.org/).</Description>
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+    <None Include="..\README.md" Link="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>

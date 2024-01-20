@@ -24,7 +24,7 @@ namespace spkl.Diffs.Test
         [TestCase(-1, 3, new[] { -1, 0, 1 })]
         public void ConstructorAndProperties(int start, int length, int[] contents)
         {
-            IndexRange range = new IndexRange(start, length);
+            IndexRange range = new(start, length);
             Assert.That(range.Start, Is.EqualTo(start));
             Assert.That(range.Length, Is.EqualTo(length));
             Assert.That(new EnumeratorWrapper(range.GetEnumerator()), Is.EqualTo(contents));
@@ -36,7 +36,7 @@ namespace spkl.Diffs.Test
         [TestCase(-1, 3)]
         public void Indexer(int start, int length)
         {
-            IndexRange range = new IndexRange(start, length);
+            IndexRange range = new(start, length);
             foreach (int index in Enumerable.Range(start, length))
             {
                 Assert.That(range[index], Is.EqualTo(start + index));
@@ -50,7 +50,7 @@ namespace spkl.Diffs.Test
         [TestCase(-2, 3, 1, new[] { -1, 0 })]
         public void TrimStart(int start, int length, int trim, int[] contents)
         {
-            IndexRange range = new IndexRange(start, length);
+            IndexRange range = new(start, length);
             IndexRange trimmedRange = range.TrimStart(trim);
             Assert.That(range.Start, Is.EqualTo(start));
             Assert.That(range.Length, Is.EqualTo(length));
@@ -66,7 +66,7 @@ namespace spkl.Diffs.Test
         [TestCase(-2, 3, 1, new[] { -2, -1 })]
         public void TrimEnd(int start, int length, int trim, int[] contents)
         {
-            IndexRange range = new IndexRange(start, length);
+            IndexRange range = new(start, length);
             IndexRange trimmedRange = range.TrimEnd(trim);
             Assert.That(range.Start, Is.EqualTo(start));
             Assert.That(range.Length, Is.EqualTo(length));
@@ -84,7 +84,7 @@ namespace spkl.Diffs.Test
         [TestCase(-2, 4, 1, 3, new[] { -1, 0 })]
         public void Range2(int start, int length, int rangeStart, int rangeEnd, int[] contents)
         {
-            IndexRange range = new IndexRange(start, length);
+            IndexRange range = new(start, length);
             IndexRange newRange = range.Range(rangeStart, rangeEnd);
             Assert.That(range.Start, Is.EqualTo(start));
             Assert.That(range.Length, Is.EqualTo(length));
@@ -100,7 +100,7 @@ namespace spkl.Diffs.Test
         [TestCase(-2, 3, 1, new[] { -1, 0 })]
         public void Range1(int start, int length, int rangeStart, int[] contents)
         {
-            IndexRange range = new IndexRange(start, length);
+            IndexRange range = new(start, length);
             IndexRange newRange = range.Range(rangeStart);
             Assert.That(range.Start, Is.EqualTo(start));
             Assert.That(range.Length, Is.EqualTo(length));
