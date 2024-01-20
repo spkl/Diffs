@@ -14,18 +14,18 @@ namespace spkl.Diffs.Test
         [Test]
         public void InputValidation()
         {
-            Assert.That(() => new MyersDiff<string>(null, new string[] { "" }), Throws.ArgumentNullException);
-            Assert.That(() => new MyersDiff<string>(new string[] { "" }, null), Throws.ArgumentNullException);
-            Assert.That(() => new MyersDiff<string>(new string[0], new string[0]), Throws.Nothing);
+            Assert.That(() => new MyersDiff<string>(null, [""]), Throws.ArgumentNullException);
+            Assert.That(() => new MyersDiff<string>([""], null), Throws.ArgumentNullException);
+            Assert.That(() => new MyersDiff<string>([], []), Throws.Nothing);
         }
 
         [Test]
         public void CustomComparer()
         {
-            string[] a = new[] { "a", "b", "c", "a", "b", "b", "a" };
-            string[] b = new[] { "C", "B", "A", "B", "A", "C" };
+            string[] a = ["a", "b", "c", "a", "b", "b", "a"];
+            string[] b = ["C", "B", "A", "B", "A", "C"];
 
-            MyersDiff<string> diff = new MyersDiff<string>(a, b, StringComparer.OrdinalIgnoreCase);
+            MyersDiff<string> diff = new(a, b, StringComparer.OrdinalIgnoreCase);
 
             (ResultType, string, string)[] result = new[]
             {
@@ -40,13 +40,13 @@ namespace spkl.Diffs.Test
                 (ResultType.B, null, "C"),
             };
 
-            (int, int, int, int)[] editScript = new[]
-            {
+            (int, int, int, int)[] editScript =
+            [
                     (0, 0, 1, 1),
                     (2, 2, 1, 0),
                     (5, 4, 1, 0),
                     (7, 5, 0, 1)
-            };
+            ];
 
             Assert.Multiple(() =>
             {
@@ -59,11 +59,14 @@ namespace spkl.Diffs.Test
         [TestCaseSource(nameof(ReferenceCases))]
         public void ReferenceResult(ReferenceCase testCase)
         {
-            Assert.That(new MyersDiff<string>(testCase.A, testCase.B).GetResult().ToArray(), Is.EqualTo(testCase.ResultAABB), "Default order");
-            Assert.That(new MyersDiff<string>(testCase.A, testCase.B).GetResult(ResultOrder.AABB).ToArray(), Is.EqualTo(testCase.ResultAABB), "AABB");
-            Assert.That(new MyersDiff<string>(testCase.A, testCase.B).GetResult(ResultOrder.BBAA).ToArray(), Is.EqualTo(testCase.ResultBBAA), "BBAA");
-            Assert.That(new MyersDiff<string>(testCase.A, testCase.B).GetResult(ResultOrder.ABAB).ToArray(), Is.EqualTo(testCase.ResultABAB), "ABAB");
-            Assert.That(new MyersDiff<string>(testCase.A, testCase.B).GetResult(ResultOrder.BABA).ToArray(), Is.EqualTo(testCase.ResultBABA), "BABA");
+            Assert.Multiple(() =>
+            {
+                Assert.That(new MyersDiff<string>(testCase.A, testCase.B).GetResult().ToArray(), Is.EqualTo(testCase.ResultAABB), "Default order");
+                Assert.That(new MyersDiff<string>(testCase.A, testCase.B).GetResult(ResultOrder.AABB).ToArray(), Is.EqualTo(testCase.ResultAABB), "AABB");
+                Assert.That(new MyersDiff<string>(testCase.A, testCase.B).GetResult(ResultOrder.BBAA).ToArray(), Is.EqualTo(testCase.ResultBBAA), "BBAA");
+                Assert.That(new MyersDiff<string>(testCase.A, testCase.B).GetResult(ResultOrder.ABAB).ToArray(), Is.EqualTo(testCase.ResultABAB), "ABAB");
+                Assert.That(new MyersDiff<string>(testCase.A, testCase.B).GetResult(ResultOrder.BABA).ToArray(), Is.EqualTo(testCase.ResultBABA), "BABA");
+            });
         }
 
         [Test]
@@ -81,18 +84,21 @@ namespace spkl.Diffs.Test
             byte[] a = File.ReadAllBytes(Path.Combine(TestContext.CurrentContext.TestDirectory, "Data", fileA));
             byte[] b = File.ReadAllBytes(Path.Combine(TestContext.CurrentContext.TestDirectory, "Data", fileB));
 
-            MyersDiff<byte> d = new MyersDiff<byte>(a, b);
+            MyersDiff<byte> d = new(a, b);
             List<byte> result1 = ApplyEditScript(a, b, d);
             List<byte> result2 = ApplyResults(d);
 
-            Assert.That(result1, Is.EqualTo(b), "Result constructed from edit script must match original file");
-            Assert.That(result2, Is.EqualTo(b), "Result constructed from result item list must match original file");
+            Assert.Multiple(() =>
+            {
+                Assert.That(result1, Is.EqualTo(b), "Result constructed from edit script must match original file");
+                Assert.That(result2, Is.EqualTo(b), "Result constructed from result item list must match original file");
+            });
         }
 
         private static List<byte> ApplyEditScript(byte[] a, byte[] b, MyersDiff<byte> d)
         {
-            List<byte> result = new List<byte>();
-            Queue<(int LineA, int LineB, int CountA, int CountB)> editScript = new Queue<(int, int, int, int)>(d.GetEditScript());
+            List<byte> result = [];
+            Queue<(int LineA, int LineB, int CountA, int CountB)> editScript = new(d.GetEditScript());
             int currentLine = 0;
             while (currentLine < a.Length)
             {
@@ -126,7 +132,7 @@ namespace spkl.Diffs.Test
 
         private static List<byte> ApplyResults(MyersDiff<byte> d)
         {
-            List<byte> result = new List<byte>();
+            List<byte> result = [];
             foreach ((ResultType resultType, byte aItem, byte bItem) in d.GetResult())
             {
                 switch (resultType)
