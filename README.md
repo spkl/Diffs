@@ -25,6 +25,7 @@ There are two methods to access the results: `GetEditScript()` and `GetResult()`
 
 ### GetEditScript()
 `GetEditScript()` returns a sequence of edit instructions. You can understand these as instructions to follow to transform sequence A to sequence B. Every instruction contains four integers, a starting line number in A and B and the number of lines to add or remove. In this case, the return value would look like this:
+
 | LineA | LineB | CountA | CountB |
 |-------|-------|--------|--------|
 | 0     | 0     | 1      | 1      |
@@ -35,21 +36,16 @@ There are two methods to access the results: `GetEditScript()` and `GetResult()`
 To better understand this, let's follow these instructions:
 
 1. In A, starting at line 0 (LineA), remove 1 line (CountA).
-
    From B, starting at line 0 (LineB), add 1 line (CountB) at position 0 (LineA).
-
    *(This removes the first "a" and adds the first "c")*
 
 2. In A, starting at line 2, remove 1 line.
-
    *(This removes the "c")*
 
 3. In A, starting at line 5, remove 1 line.
-
    *(This removes the last "b")*
 
 4. From B, starting at line 5 (LineB), add 1 line (CountB) at position 7 (LineA).
-
    *(This adds the last "c")*
 
 Following these instructions, `abcabba` is transformed to `cbabac`.
@@ -57,6 +53,7 @@ Following these instructions, `abcabba` is transformed to `cbabac`.
 
 ### GetResult()
 `GetResult()` returns the resulting diff as a sequence of tuples that represent lines. In this case, the return value would look like this:
+
 | ResultType | AItem | BItem |
 |------------|-------|-------|
 | A          | a     |       |
@@ -78,7 +75,8 @@ A: a b c
 B: x y
 ```
 
-The following table shows how the result would be returned when specifying the different ResultOrder values AABB, BBAA, ABAB and BABA:
+The following table shows how the result would be returned when specifying the different ResultOrder values `AABB`, `BBAA`, `ABAB` and `BABA`:
+
 | AABB | BBAA | ABAB | BABA |
 |:----:|:----:|:----:|:----:|
 | a -  | - x  | a -  | - x  |
