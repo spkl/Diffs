@@ -8,7 +8,8 @@
     <Authors>Sebastian Fischer</Authors>
     <Company>Sebastian Fischer</Company>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <Copyright>Copyright (c) 2021 Sebastian Fischer</Copyright>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
+    <Copyright>Copyright (c) 2024 Sebastian Fischer</Copyright>
     <RepositoryUrl>https://github.com/spkl/Diffs</RepositoryUrl>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
     <FileVersion>2.0.0.0</FileVersion>
@@ -22,9 +23,8 @@
 This project uses Semantic Versioning (https://semver.org/).</Description>
     <PackageTags>diff diffs difference algorithm ses shortest edit script myers</PackageTags>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <PackageReleaseNotes>This is a bugfix release fixing two critical issues:
-- The VArray containing the endpoints of the furthest reaching paths was created too small, leading to an IndexOutOfRangeException in some cases.
-- The result could contain items that indicate they exists on "ResultType.Both" sides, yet they contained two different values as AItem and BItem.</PackageReleaseNotes>
+    <PackageReleaseNotes>- Upgraded target framework to .NET 8.0. Older frameworks are still supported with versions 1.x. 
+- Removed the ArrayView class.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,6 +32,7 @@ This project uses Semantic Versioning (https://semver.org/).</Description>
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+    <None Include="..\README.md" Link="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>
