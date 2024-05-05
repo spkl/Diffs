@@ -1,0 +1,32 @@
+name: Publish NuGet Package
+
+on:
+  release:
+    types: [ published ]
+  workflow_dispatch:
+  push:
+
+jobs:
+  publish:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        filter: tree:0
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Pack
+      run: dotnet pack src/Diffs.csproj /p:ContinuousIntegrationBuild=true --output .
+    - name: Publish
+      shell: bash
+      env:
+        API_KEY: ${{ secrets.NUGET_ORG_API_KEY }}
+      run: |
+        dotnet nuget push "*.nupkg" --api-key "$API_KEY" --source https://api.nuget.org/v3/index.json
