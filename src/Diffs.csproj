@@ -13,19 +13,21 @@
     <Copyright>Copyright (c) 2024 Sebastian Fischer</Copyright>
     <RepositoryUrl>https://github.com/spkl/Diffs</RepositoryUrl>
     <MinVerTagPrefix>v</MinVerTagPrefix>
+
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\keys\spkl.Diffs.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
+
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
     <PackageProjectUrl>https://github.com/spkl/Diffs</PackageProjectUrl>
     <Description>Provides a .NET implementation to the diff algorithm (shortest edit script) described by Eugene Myers in "An O(ND) Difference Algorithm and Its Variations". Unlike some other implementations, this one can compare sequences of any object type, using the standard Equals method or a custom IEqualityComparer.
 
 This project uses Semantic Versioning (https://semver.org/).</Description>
     <PackageTags>diff diffs difference algorithm ses shortest edit script myers</PackageTags>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <PackageReleaseNotes>- Upgraded target framework to .NET 8.0.
-- Removed the ArrayView class.
-- Fixed table formatting in README (2.0.1).
-- Re-added support for .NET Standard 2.0 (2.0.2).</PackageReleaseNotes>
+    <PackageReleaseNotes>- Provided snupkg for debug symbols.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
