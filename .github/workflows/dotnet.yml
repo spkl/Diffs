@@ -33,3 +33,6 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
+    - name: Check Format
+      run: dotnet format --verify-no-changes
+      if: ${{ matrix.os == 'windows-latest' }}
